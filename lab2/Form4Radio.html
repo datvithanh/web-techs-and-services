@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>
+      complex forms be messin with my brain
+    </title>
+  </head>
+  <body>
+    wise words from w3s
+    Notes on GET:
+    <ul>
+    <li>Appends form-data into the URL in name/value pairs</li>
+    The length of a URL is limited (about 3000 characters)</li>
+    <li>Never use GET to send sensitive data! (will be visible in the URL)</li>
+    <li>Useful for form submissions where a user wants to bookmark the result</li>
+    <li>GET is better for non-secure data, like query strings in Google</li>
+    </ul>
+    Notes on POST:
+    <ul>
+      <li>Appends form-data inside the body of the HTTP request (data is not shown in URL)</li>
+      <li>Has no size limitations</li>
+      <li>Form submissions with POST cannot be bookmarked</li>
+    </ul>
+
+    <form action="Form4Radio.php" method="POST">
+      <br>
+      enter email addr: <input type="text" size="16" maxlength="16" name="email">
+      <br>
+      May we contact you? 
+      <input type="radio" name="contact" value="Yiss">
+      <input type="radio" name="contact" value="Absolutely not">
+      <br>
+      <input type="submit" name="submit" value="Submit" />
+      <input type="reset" value="erase">
+    </form>
+  </body>
+</html>
