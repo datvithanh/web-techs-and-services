@@ -1,0 +1,27 @@
+version: '3'
+
+services: 
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: abc123
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - "33061:3306"
+
+  webserver:
+    build: ./docker/php-nginx
+    depends_on: 
+      - db
+    volumes:
+      - ./:/var/www/html
+    ports: 
+      - "80:8080"
+
+
+volumes:
+  db_data: {}
