@@ -9,6 +9,7 @@ abstract class Model
 {
     protected static $table;
     protected static $primaryKey = 'id';
+    protected static $columns;
 
     protected static function getDB()
     {
@@ -30,9 +31,8 @@ abstract class Model
     }
 
     public static function instanize($rows) {
-        $class = static::class;
-        $class_instances = array_map(function($row) use ($class){
-            return new $class($row);
+        $class_instances = array_map(function($row) {
+            return static::fromRow($row);
         }, $rows);
         return $class_instances;
     }
@@ -73,20 +73,86 @@ abstract class Model
         return static::instanize($rows);
     }
 
-    // // # create 
-    // public static function create($email, $name, $phone_number, $role){
-    //     $db = static::getDB();
-    //     // $stmt = $db->query('SELECT * FROM user WHERE user_id =' . $id);
-    //     $query = "INSERT INTO user (email, name, phone_number, role) VALUES ('{$email}', '{$name}', '{$phone_number}', '{$role}');";
-    //     var_dump($query);
-    //     $stmt = $db->prepare($query);
-    //     return $stmt->execute();
-    // }
-
-    function __construct($array)
+    function __construct()
     {
-        foreach($array as $key=>$value){
-            $this->$key = $value;
+        // foreach($array as $key=>$value){
+        //     $this->$key = $value;
+        // }
+    }
+
+    public static function fromRow($row) {
+        $class = static::class;
+
+        $instance = new $class();
+        foreach($row as $key=>$value){
+            $instance->$key = $value;
         }
+        return $instance;
+    }
+
+    public static function blankInstance() {
+        $class = static::class;
+        $instance = new $class();
+        foreach(static::$columns as $column){
+            $instance->$column = '';
+        }
+        return $instance;
+    }
+
+    public function save() {
+        $attrs = [];
+        $values = [];
+        foreach(static::$columns as $column){
+            if($this->$column){
+                array_push($attrs, $column);
+                array_push($values, $this->$column);
+            }
+        }
+
+        if(property_exists($this, 'id')){
+            $query = 'UPDATE ' . static::$table . " SET ";
+            $updates = [];
+            foreach(static::$columns as $column){
+                if($this->$column)
+                    array_push($updates, $column . "='" . $this->$column . "'");
+            }
+            $query .= implode(', ', $updates) . " WHERE id=" . $this->id;
+        }
+        else 
+            $query = "INSERT INTO " . static::$table . " (" . implode(', ', $attrs) . ") VALUES " . "('" . implode("', '", $values) . "')";
+
+        $db = static::getDB();
+
+        $stmt = $db->prepare($query);
+        $status = $stmt->execute();
+        
+        if (!property_exists($this, 'id')){
+            $id = $db->lastInsertId();
+            $this->id = $id;
+        }
+        return $status;
+    }
+
+    public function update() {
+        // $attrs = [];
+        // $values = [];
+        // foreach(static::$columns as $column){
+        //     if($this->$column){
+        //         array_push($attrs, $column);
+        //         array_push($values, $this->$column);
+        //     }
+        // }
+        // $query = "INSERT INTO " . static::$table . " (" . implode(', ', $attrs) . ") VALUES " . "('" . implode("', '", $values) . "')";
+        
+        // $db = static::getDB();
+        // $stmt = $db->prepare($query);
+        // return $stmt->execute();   
+    }
+
+    public function delete() {
+        $query = "DELETE from " . static::$table . " where id=" . $this->id;
+        $db = static::getDB();
+        $stmt = $db->prepare($query);
+        return $stmt->execute();
     }
 }

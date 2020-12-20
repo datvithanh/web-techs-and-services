@@ -1,24 +1,12 @@
 <?php
-
-/**
- * Front controller
- *
- * PHP version 7.0
- */
-
-/**
- * Composer
- */
 require dirname(__DIR__) . '/vendor/autoload.php';
-
-
 /**
  * Error and Exception handling
  */
+session_start();
 error_reporting(E_ALL);
 set_error_handler('Core\Error::errorHandler');
 set_exception_handler('Core\Error::exceptionHandler');
-
 
 /**
  * Routing
@@ -26,7 +14,21 @@ set_exception_handler('Core\Error::exceptionHandler');
 $router = new Core\Router();
 
 // Add the routes
-$router->add('', ['controller' => 'Home', 'action' => 'index']);
-$router->add('{controller}/{action}');
-    
-$router->dispatch($_SERVER['QUERY_STRING']);
+$router->add('/', ['controller' => 'HomeController', 'GET' => 'index']);
+$router->add('/register', ['controller' => 'HomeController', 'GET' => 'registerGet', 'POST' => 'registerPost']);
+$router->add('/login', ['controller' => 'HomeController', 'GET' => 'loginGet', 'POST' => 'loginPost']);
+
+$router->add('/gym', ['controller' => 'GymController', 'GET' => 'get']);
+$router->add('/gym/{id:\d+}/update', ['controller' => 'GymController', 'GET'  => 'updateView', 'POST' => 'update']);
+$router->add('/gym/{id:\d+}/delete', ['controller' => 'GymController', 'GET' => 'delete']);
+$router->add('/gym/create', ['controller' => 'GymController', 'GET' => 'createView', 'POST' => 'create']);
+$router->add('/gym/{id:\d+}', ['controller' => 'GymController', 'GET' => 'info']);
+
+$router->add('/session/{id:\d+}/update', ['controller' => 'SessionController', 'GET'  => 'updateView', 'POST' => 'update']);
+$router->add('/session/{id:\d+}/delete', ['controller' => 'SessionController', 'GET' => 'delete']);
+$router->add('/gym/{id:\d+}/session/create', ['controller' => 'SessionController', 'GET' => 'createView', 'POST' => 'create']);
+
+$router->add('/gym-register', ['controller' => 'GymController', 'GET' => 'gymRegisterView']);
+$router->add('/gym-register/{id:\d+}', ['controller' => 'GymController', 'GET' => 'gymRegister']);
+
+$router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

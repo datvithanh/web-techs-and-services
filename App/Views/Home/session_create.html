@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form class="form-horizontal" action='/gym/{{gym.id}}/session/create' method="POST">
+        <fieldset>
+            <div id="legend">
+                <legend class="">Create new session for {{gym.name}}</legend>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="class_type_id"> Session type </label>
+                <div class="controls">
+                    <select id="class_type_id" name="class_type_id" autofocus="true">
+                        <option value="1"> Regular </option>
+                        <option value="2"> Yoga </option>
+                        <option value="3"> Boxing </option>
+                        <option value="4"> Zumba </option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="start_time"> Start time </label>
+                <div class="controls">
+                    <input type="datetime-local" id="start_time" name="start_time">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="end_time"> End time </label>
+                <div class="controls">
+                    <input type="datetime-local" id="end_time" name="end_time">
+                </div>
+            </div>
+            <br>
+            <div class="control-group">
+                <!-- Button -->
+                <div class="controls">
+                    <button class="btn btn-success">Create</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

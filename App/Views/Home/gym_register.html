@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+{% for gym in gyms %}
+<div class="container">
+  <div class="alert alert-info" role="alert">
+    <p>
+      <b>ID</b>: {{gym.id}}<br>
+      <b>Name</b>: {{gym.name}}<br>
+      <b>Address</b>: {{gym.address}}
+    </p>
+  </div>
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-8">
+            <h4>Sessions</h4>
+          </div>
+        </div>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Class type</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for session in gym.sessions %}
+          <tr>
+            <td>{{session.id}}</td>
+            <td>{{session.class_type}}</td>
+            <td>{{session.start_time}}</td>
+            <td>{{session.end_time}}</td>
+            <td>
+              <a type="button" class="btn btn-primary" href="/gym-register/{{session.id}}">Register</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}

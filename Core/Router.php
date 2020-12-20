@@ -9,7 +9,6 @@ namespace Core;
  */
 class Router
 {
-
     /**
      * Associative array of routes (the routing table)
      * @var array
@@ -102,10 +101,9 @@ class Router
      *
      * @return void
      */
-    public function dispatch($url)
+    public function dispatch($url, $method)
     {
         $url = $this->removeQueryStringVariables($url);
-
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = $this->convertToStudlyCaps($controller);
@@ -113,16 +111,23 @@ class Router
 
             if (class_exists($controller)) {
                 $controller_object = new $controller($this->params);
+                if(array_key_exists($method, $this->params)){
+                    $action = $this->params[$method];
+                    $action = $this->convertToCamelCase($action);
 
-                $action = $this->params['action'];
-                $action = $this->convertToCamelCase($action);
+                    if (preg_match('/action$/i', $action) == 0) {
+                        if (array_key_exists('id', $this->params))
+                            $controller_object->$action($this->params['id']);
+                        else
+                            $controller_object->$action();
 
-                if (preg_match('/action$/i', $action) == 0) {
-                    $controller_object->$action();
-
-                } else {
-                    throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
+                    } else {
+                        throw new \Exception("Method $action in controller $controller cannot be called directly - remove the Action suffix to call this method");
+                    }
                 }
+                else{
+                    throw new \Exception("Route doesnt support method {$method}");
+                }   
             } else {
                 throw new \Exception("Controller class $controller not found");
             }

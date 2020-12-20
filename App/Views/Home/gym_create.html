@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="container">
+  <form class="form-horizontal" action='/gym/create' method="POST">
+      <fieldset>
+          <div id="legend">
+              <legend class="">Create new gym</legend>
+          </div>
+          <div class="control-group">
+              <!-- Username -->
+              <label class="control-label" for="name">Gym's name</label>
+              <div class="controls">
+                  <input type="text" id="name" name="name" placeholder="" class="input-xlarge">
+                  <p class="help-block">Venue's name</p>
+              </div>
+          </div>
+
+          <div class="control-group">
+              <!-- E-mail -->
+              <label class="control-label" for="address">Address</label>
+              <div class="controls">
+                  <input type="text" id="address" name="address" placeholder="" class="input-xlarge">
+                  <p class="help-block">Gym's address</p>
+              </div>
+          </div>
+          <div class="control-group">
+              <!-- Button -->
+              <div class="controls">
+                  <button class="btn btn-success">Create</button>
+              </div>
+          </div>
+      </fieldset>
+  </form>
+</div>
+{% endblock %}
