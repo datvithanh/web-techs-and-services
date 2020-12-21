@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <div class="alert alert-info" role="alert">
+    <p>
+      <b>ID</b>: {{user.id}}<br>
+      <b>Name</b>: {{user.name}}<br>
+      <b>Email</b>: {{user.email}}<br>
+      <b>Role</b>: {{user.role}}<br>
+    </p>
+  </div>
+  {% if user.role == 'user' %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Class type</th>
+        <th>Start</th>
+        <th>End</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td>{{session.id}}</td>
+        <td>{{session.class_type}}</td>
+        <td>{{session.start_time}}</td>
+        <td>{{session.end_time}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Gym</th>
+        <th>User</th>
+        <th>Class type</th>
+        <th>Start</th>
+        <th>End</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td>{{session['id']}}</td>
+        <td>{{session['gym_id']}}</td>
+        <td>{{session['email']}}</td>
+        <td>{{session['class_type']}}</td>
+        <td>{{session['start_time']}}</td>
+        <td>{{session['end_time']}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% endblock %}

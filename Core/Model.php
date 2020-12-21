@@ -38,6 +38,22 @@ abstract class Model
     }
 
     // return an array of instances
+    public static function custom($query) {
+        $db = static::getDB();
+
+        $stmt = $db->prepare($query);
+        $status = $stmt->execute();
+
+        return $status;
+    }
+
+    public static function custom_fetch($query) {
+        $db = static::getDB();
+        $stmt = $db->query($query);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
+
     public static function all()
     {
         $db = static::getDB();

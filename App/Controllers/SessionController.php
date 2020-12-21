@@ -9,7 +9,7 @@ use \App\Models\Gym;
 use App\Models\Session;
 use DateTime;
 
-class SessionController extends \Core\Controller
+class SessionController extends \App\Controllers\BaseController
 {
     public function delete($id) {
         $session = Session::getById($id);
@@ -25,10 +25,9 @@ class SessionController extends \Core\Controller
 
     public function createView($id) {
         $gym = Gym::getById($id);
-        $data = [];
-        $data['gym'] = $gym;
+        $this->data['gym'] = $gym;
 
-        View::renderTemplate('Home/session_create.html', $data);
+        View::renderTemplate('Home/session_create.html', $this->data);
     }
 
     public function create($id) {
@@ -78,8 +77,8 @@ class SessionController extends \Core\Controller
         $session->start_time = substr(str_replace(' ', 'T', $session->start_time), 0, -3);
         $session->end_time = substr(str_replace(' ', 'T', $session->end_time), 0, -3);
 
-        $data = ['session' => $session];
+        $this->data = ['session' => $session];
 
-        View::renderTemplate('Home/session_update.html', $data);
+        View::renderTemplate('Home/session_update.html', $this->data);
     }
 }

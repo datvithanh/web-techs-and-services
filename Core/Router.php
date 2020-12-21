@@ -110,11 +110,12 @@ class Router
             $controller = $this->getNamespace() . $controller;
 
             if (class_exists($controller)) {
+                // $proxy = 'App\Proxies\AuthProxy';
+                // $controller_object = new $proxy(new $controller($this->params));
                 $controller_object = new $controller($this->params);
                 if(array_key_exists($method, $this->params)){
                     $action = $this->params[$method];
                     $action = $this->convertToCamelCase($action);
-
                     if (preg_match('/action$/i', $action) == 0) {
                         if (array_key_exists('id', $this->params))
                             $controller_object->$action($this->params['id']);
@@ -200,12 +201,6 @@ class Router
         return $url;
     }
 
-    /**
-     * Get the namespace for the controller class. The namespace defined in the
-     * route parameters is added if present.
-     *
-     * @return string The request URL
-     */
     protected function getNamespace()
     {
         $namespace = 'App\Controllers\\';
@@ -216,4 +211,5 @@ class Router
 
         return $namespace;
     }
+
 }

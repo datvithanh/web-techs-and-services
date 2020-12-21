@@ -40,7 +40,11 @@
             <td>{{session.start_time}}</td>
             <td>{{session.end_time}}</td>
             <td>
-              <a type="button" class="btn btn-primary" href="/gym-register/{{session.id}}">Register</a>
+              {% if session.is_registered == false %}
+                <a type="button" class="btn btn-primary" href="/gym-register/{{session.id}}">Register</a>
+              {% else %}
+                <a type="button" class="btn btn-warning" href="/cancel-gym-register/{{session.id}}">Cancel</a>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}

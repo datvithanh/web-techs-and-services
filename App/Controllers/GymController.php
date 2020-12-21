@@ -6,18 +6,17 @@ use App\Models\ClassType;
 use \Core\View;
 use \App\Models\User;
 use \App\Models\Gym;
+use App\Models\Register;
 use App\Models\Session;
 
-class GymController extends \Core\Controller
+class GymController extends \App\Controllers\BaseController
 {
     public function get(){
-        $data = [];
-        $data['gyms'] = Gym::all();
-        View::renderTemplate('Home/gym.html', $data);
+        $this->data['gyms'] = Gym::where('owner_id', $this->data['user']->id);
+        View::renderTemplate('Home/gym.html', $this->data);
     }
 
     public function info($id) {
-        $data = [];
         $gym = Gym::getById($id);
 
         if($gym == null){
@@ -30,10 +29,10 @@ class GymController extends \Core\Controller
             $session->class_type = ClassType::$class_type_map[$session->class_type_id];
         }
 
-        $data['gym'] = $gym;
-        $data['sessions'] = $sessions;
+        $this->data['gym'] = $gym;
+        $this->data['sessions'] = $sessions;
         
-        View::renderTemplate('Home/gym_info.html', $data);
+        View::renderTemplate('Home/gym_info.html', $this->data);
     }
 
     public function createView(){
@@ -58,8 +57,8 @@ class GymController extends \Core\Controller
             return;
         }
 
-        $data = ['gym' => $gym];
-        View::renderTemplate('Home/gym_update.html', $data);
+        $this->data['gym'] = $gym;
+        View::renderTemplate('Home/gym_update.html', $this->data);
     }
 
     public function update($id) { 
@@ -90,19 +89,35 @@ class GymController extends \Core\Controller
 
     public function gymRegisterView() {
         $gyms = Gym::all();
+        $register_ids = array_map(function($register){
+            return $register->session_id;
+        }, 
+        Register::where('user_id', $this->data['user']->id));
         foreach($gyms as $gym) {
             $sessions = Session::where('gym_id', $gym->id);
-            foreach($sessions as $session) 
+            foreach($sessions as $session) {
                 $session->class_type = ClassType::$class_type_map[$session->class_type_id];
+                $session->is_registered = in_array($session->id, $register_ids);
+            }
             $gym->sessions = $sessions;
         }
 
-        $data = ['gyms' => $gyms];
+        $this->data['gyms'] = $gyms;
 
-        View::renderTemplate('Home/gym_register.html', $data);
+        View::renderTemplate('Home/gym_register.html', $this->data);
     }
 
     public function gymRegister($id) { 
-        var_dump($id);
+        // var_dump($id);
+        $register = Register::blankInstance();
+        $register->user_id = $this->data['user']->id;
+        $register->session_id = $id;
+        $register->save();
+        header("Location: /gym-register");
+    }
+
+    public function cancelGymRegister($id) {
+        $register = Register::custom('delete from register where user_id=' .$this->data['user']->id. ' and session_id='.$id);
+        header("Location: /gym-register");
     }
 }
